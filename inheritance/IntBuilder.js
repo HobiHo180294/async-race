@@ -1,10 +1,11 @@
-// IntBuilder class
+// Child IntBuilder class
 
 import EntityBuilder from "./EntityBuilder.js";
 
 class IntBuilder extends EntityBuilder {
   #integer;
 
+  // constructor takes starting integer, if not passed starts with 0;
   constructor(integer) {
     super();
 
@@ -20,37 +21,58 @@ class IntBuilder extends EntityBuilder {
     this.#integer = integer;
   }
 
-  plus(...n) {
-    super.throwErrIfFuncArgElemsNotInteger(arguments);
+  _areFuncArgumentsInteger(funcArguments) {
+    if (
+      Array.from(Array.from(funcArguments)).some(
+        (element) =>
+          typeof element !== "number" ||
+          isNaN(element) ||
+          !Number.isInteger(element)
+      )
+    )
+      return false;
 
-    const sumOfArguments = super.getSumOfFuncArguments(arguments);
-
-    this.#integer += sumOfArguments;
-
-    return this.#integer;
+    return true;
   }
 
+  _throwErrIfFuncArgElemsNotInteger(funcArguments) {
+    if (!this._areFuncArgumentsInteger(funcArguments))
+      throw new TypeError("Arguments must be integers!");
+  }
+
+  // take infinite number of integers and sum all with stored value;
+  plus(...n) {
+    this._throwErrIfFuncArgElemsNotInteger(arguments);
+    return (this.#integer += super.plus(...n));
+  }
+
+  // take infinite number of integers and subtract from stored value;
   minus(...n) {
-    super.throwErrIfFuncArgElemsNotInteger(arguments);
+    this._throwErrIfFuncArgElemsNotInteger(arguments);
     return (this.#integer -= super.getSumOfFuncArguments(arguments));
   }
 
+  // multiply param n on stored value;
   multiply(n) {
     return (this.#integer *= n);
   }
 
+  // leaves integer part of division stored value on n;
   divide(n) {
     return (this.#integer = Math.round(this.#integer / n));
   }
 
+  // leaves remainder of the division stored value with on n;
   mod(n) {
     return (this.#integer %= n);
   }
 
+  // returns stored value;
   get() {
     return this.#integer;
   }
 
+  // static method; from, to: integer; values limits the range of random values;
   static random(from, to) {
     return Math.floor(Math.random() * (to - from) + from);
   }
