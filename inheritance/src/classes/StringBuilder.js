@@ -3,7 +3,7 @@
 import EntityBuilder from "./EntityBuilder.js";
 
 // constructor takes starting string, if not passed starts with '';
-function StringBuilder(str) {
+export default function StringBuilder(str) {
   if (typeof str === "undefined") str = "";
 
   if (typeof str !== "string")
@@ -39,7 +39,7 @@ function StringBuilder(str) {
 
   // leaves substring starting from and with length n;
   this.sub = function (from, n) {
-    return (this._str = this._str.substring(from, n));
+    return (this._str = this._str.substring(from, n + 1));
   };
 
   // returns stored value;
@@ -62,6 +62,23 @@ EntityBuilder.prototype.multiply = function (n) {
 EntityBuilder.prototype.divide = function (n) {
   const k = Math.floor(this._str.length / n);
   return (this._str = this._str.substring(0, k));
+};
+
+StringBuilder.toString = function (classObject) {
+  console.log(
+    "StringBuilder: " +
+      "\n" +
+      "=================================" +
+      "\n" +
+      "Plus method result: ",
+    classObject.plus(" all", "!") + "\n" + "Minus method result: ",
+    classObject.minus(4) + "\n" + "Multiply method result: ",
+    classObject.multiply(3) + "\n" + "Divide method result: ",
+    classObject.divide(4) + "\n" + "Remove method result: ",
+    classObject.remove("l") + "\n" + "Sub method result: ",
+    classObject.sub(1, 1) + "\n" + "Get method result: ",
+    classObject.get() + "\n"
+  );
 };
 
 function inherit(Child, Parent) {

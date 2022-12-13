@@ -2,7 +2,7 @@
 
 import EntityBuilder from "./EntityBuilder.js";
 
-class IntBuilder extends EntityBuilder {
+export default class IntBuilder extends EntityBuilder {
   #integer;
 
   // constructor takes starting integer, if not passed starts with 0;
@@ -75,5 +75,22 @@ class IntBuilder extends EntityBuilder {
   // static method; from, to: integer; values limits the range of random values;
   static random(from, to) {
     return Math.floor(Math.random() * (to - from) + from);
+  }
+
+  static toString(className, classObject) {
+    console.log(
+      "IntBuilder: " +
+        "\n" +
+        "=================================" +
+        "\n" +
+        "Random method result: ",
+      className.random(10, 100) + "\n" + "Plus method result: ",
+      classObject.plus(2, 3, 2) + "\n" + "Minus method result: ",
+      classObject.minus(1, 2) + "\n" + "Multiply method result: ",
+      classObject.multiply(2) + "\n" + "Divide method result: ",
+      classObject.divide(4) + "\n" + "Mod method result: ",
+      classObject.mod(3) + "\n" + "Get method result: ",
+      classObject.get() + "\n"
+    );
   }
 }

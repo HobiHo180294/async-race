@@ -18,4 +18,6 @@ export default class EntityBuilder {
   getSumOfFuncArguments(funcArguments) {
     return Array.from(funcArguments).reduce((acc, curr) => acc + curr);
   }
+
+  static toString() {}
 }
