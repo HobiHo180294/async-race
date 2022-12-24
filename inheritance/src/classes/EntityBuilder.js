@@ -1,8 +1,8 @@
 export default class EntityBuilder {
   constructor() {}
 
-  plus() {
-    return this.getSumOfFuncArguments(arguments);
+  plus(...data) {
+    return this.getSumOfFuncArguments(data);
   }
 
   minus() {}
