@@ -1,11 +1,7 @@
-// Parent abstract class EntityBuilder
-
 export default class EntityBuilder {
-  #type;
-
   constructor() {}
 
-  plus(...data) {
+  plus() {
     return this.getSumOfFuncArguments(arguments);
   }
 
@@ -18,6 +14,4 @@ export default class EntityBuilder {
   getSumOfFuncArguments(funcArguments) {
     return Array.from(funcArguments).reduce((acc, curr) => acc + curr);
   }
-
-  static toString() {}
 }
