@@ -4,27 +4,22 @@ export default function StringBuilder(str = "") {
   if (typeof str !== "string")
     throw new TypeError("The data passed into constructor must be string!");
 
-  this._str = str;
-
-  this.get = function () {
-    return this._str;
-  };
+  EntityBuilder.call(this, str);
 }
 
-StringBuilder.prototype._areFuncArgumentsString = function (funcArgs) {
-  if (Array.from(funcArgs).some((element) => typeof element !== "string"))
-    return false;
-
-  return true;
+StringBuilder.prototype._areFuncArgumentsString = function (...funcArgs) {
+  return funcArgs.some((element) => typeof element !== "string") ? false : true;
 };
 
-StringBuilder.prototype._throwErrIfFuncArgElemsNotString = function (funcArgs) {
-  if (!this._areFuncArgumentsString(funcArgs))
+StringBuilder.prototype._throwErrIfFuncArgElemsNotString = function (
+  ...funcArgs
+) {
+  if (!this._areFuncArgumentsString(...funcArgs))
     throw new TypeError("Arguments must be string!");
 };
 
 StringBuilder.prototype.plus = function (...str) {
-  this._throwErrIfFuncArgElemsNotString(arguments);
+  this._throwErrIfFuncArgElemsNotString(...str);
   this._str += EntityBuilder.prototype.plus(...str);
   return this;
 };
@@ -46,7 +41,7 @@ StringBuilder.prototype.divide = function (n) {
 };
 
 StringBuilder.prototype.remove = function (str) {
-  this._throwErrIfFuncArgElemsNotString(arguments);
+  this._throwErrIfFuncArgElemsNotString(str);
   this._str = this._str.split(str).join("");
   return this;
 };
