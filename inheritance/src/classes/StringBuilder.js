@@ -20,34 +20,34 @@ StringBuilder.prototype._throwErrIfFuncArgElemsNotString = function (
 
 StringBuilder.prototype.plus = function (...str) {
   this._throwErrIfFuncArgElemsNotString(...str);
-  this._str += EntityBuilder.prototype.plus(...str);
+  this._entity += EntityBuilder.prototype.plus(...str);
   return this;
 };
 
 StringBuilder.prototype.minus = function (n) {
-  this._str = this._str.slice(0, -n);
+  this._entity = this._entity.slice(0, -n);
   return this;
 };
 
 StringBuilder.prototype.multiply = function (n) {
-  this._str = this._str.repeat(n);
+  this._entity = this._entity.repeat(n);
   return this;
 };
 
 StringBuilder.prototype.divide = function (n) {
-  const k = Math.floor(this._str.length / n);
-  this._str = this._str.substring(0, k);
+  const k = Math.floor(this._entity.length / n);
+  this._entity = this._entity.substring(0, k);
   return this;
 };
 
 StringBuilder.prototype.remove = function (str) {
   this._throwErrIfFuncArgElemsNotString(str);
-  this._str = this._str.split(str).join("");
+  this._entity = this._entity.split(str).join("");
   return this;
 };
 
 StringBuilder.prototype.sub = function (from, n) {
-  this._str = this._str.substring(from, n + 1);
+  this._entity = this._entity.substring(from, n + 1);
   return this;
 };
 

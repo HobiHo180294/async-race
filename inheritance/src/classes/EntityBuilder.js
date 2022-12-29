@@ -1,9 +1,5 @@
 function EntityBuilder(entity) {
-  typeof entity === "number" ? (this._integer = entity) : (this._str = entity);
-
-  this.get = function () {
-    return typeof entity === "number" ? this._integer : this._str;
-  };
+  this._entity = entity;
 }
 
 EntityBuilder.prototype._getSumOfFuncArguments = function (funcArguments) {
@@ -19,5 +15,9 @@ EntityBuilder.prototype.minus = function () {};
 EntityBuilder.prototype.multiply = function () {};
 
 EntityBuilder.prototype.divide = function () {};
+
+EntityBuilder.prototype.get = function () {
+  return this._entity;
+}
 
 export default EntityBuilder;

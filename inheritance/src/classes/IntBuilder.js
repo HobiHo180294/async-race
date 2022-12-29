@@ -30,28 +30,28 @@ export default class IntBuilder extends EntityBuilder {
 
   plus(...n) {
     this.#throwErrIfFuncArgElemsNotInteger(...n);
-    this._integer += super.plus(...n);
+    this._entity += super.plus(...n);
     return this;
   }
 
   minus(...n) {
     this.#throwErrIfFuncArgElemsNotInteger(...n);
-    this._integer -= super._getSumOfFuncArguments(n);
+    this._entity -= super._getSumOfFuncArguments(n);
     return this;
   }
 
   multiply(n) {
-    this._integer *= n;
+    this._entity *= n;
     return this;
   }
 
   divide(n) {
-    this._integer = Math.round(this._integer / n);
+    this._entity = Math.round(this._entity / n);
     return this;
   }
 
   mod(n) {
-    this._integer %= n;
+    this._entity %= n;
     return this;
   }
 
