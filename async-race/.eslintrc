@@ -1,6 +1,12 @@
 {
   "parser": "@babel/eslint-parser",
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
   "parserOptions": {
+    "ecmaVersion": 8,
     "requireConfigFile": false
   },
   "extends": ["airbnb", "prettier"],
@@ -10,7 +16,8 @@
       "error",
       {
         "singleQuote": true,
-        "parser": "flow",
+        "parser": "babel",
+        "trailingComma": "es5",
         "printWidth": 80
       }
     ],
@@ -25,6 +32,7 @@
       {
         "devDependencies": true
       }
-    ]
+    ],
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
   }
 }

@@ -7,9 +7,69 @@
     <title>Document</title>
   </head>
   <body>
-    <div class="image-wrap">
-      <img src="../../assets/images/bird.jpg" alt="BIRD" />
+    <div class="_wrapper">
+      <header class="controller">
+        <div class="controller__container">
+          <div class="controller__body">
+            <div class="controller__views view-controller">
+              <button
+                class="view-controller__to-garage view-controller__toggler"
+              >
+                To Garage
+              </button>
+              <button
+                class="view-controller__to-winners view-controller__toggler"
+              >
+                To Winners
+              </button>
+            </div>
+
+            <div class="controllers__options option-controller">
+              <div class="option-controller__wrapper">
+                <input
+                  type="text"
+                  class="option-controller__car _car-name__input"
+                />
+                <input type="color" class="option-controller__color" />
+                <button class="option-controller__button">Create</button>
+              </div>
+
+              <div class="option-controller__wrapper">
+                <input
+                  type="text"
+                  class="option-controller__car _car-name__input"
+                />
+                <input type="color" class="option-controller__color" />
+                <button class="option-controller__button">Update</button>
+              </div>
+            </div>
+
+            <div class="controller__buttons button-controller">
+              <button class="button-controller__race">Race</button>
+              <button class="button-controller__reset">Reset</button>
+              <button class="button-controller__gen-cars">Generate cars</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="view">
+        <div class="view__container">
+          <h2 class="view__title">
+            Garage (
+            <span class="view__page">0</span>
+            )
+          </h2>
+
+          <div class="view__content"></div>
+
+          <div class="view__pagination pagination-view">
+            <button class="pagination-view__prev">Prev</button>
+            <span class="pagination-view__page">1</span>
+            <button class="pagination-view__next">Next</button>
+          </div>
+        </div>
+      </main>
     </div>
-    <h1>HI!</h1>
   </body>
 </html>

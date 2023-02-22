@@ -4,13 +4,13 @@ import {
   mode,
   target,
   devtool,
-} from './src/js/modules/variables/_webpack-config-variables.mjs';
+} from './src/js/modules/webpack/variables/_webpack-config-variables.mjs';
 import {
   genFilename,
   optimization,
   useWebpackPlugins,
   buildModuleRules,
-} from './src/js/modules/functions/_webpack-config-funcs.mjs';
+} from './src/js/modules/webpack/functions/_webpack-config-funcs.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,6 +28,10 @@ export default {
 
   entry: {
     main: ['@babel/polyfill', '@main/script.mjs'],
+  },
+
+  experiments: {
+    topLevelAwait: true,
   },
 
   output: {
