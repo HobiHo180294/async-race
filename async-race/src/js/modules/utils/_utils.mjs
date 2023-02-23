@@ -1,7 +1,22 @@
 import DOMElement from '../objects/_dom-element.mjs';
 
+const SERVER_URL = 'http://127.0.0.1:3000';
+
 const SVG_DATA_URL_PREFIX = 'data:image/svg+xml;base64,';
 const SVG_MIME_TYPE = 'image/svg+xml';
+
+function throwError(errorType, errorMessage) {
+  switch (errorType) {
+    case 'TypeError':
+      throw new TypeError(errorMessage);
+    case 'ReferenceError':
+      throw new ReferenceError(errorMessage);
+    case 'RangeError':
+      throw new RangeError(errorMessage);
+    default:
+      throw new Error(errorMessage);
+  }
+}
 
 function fillElementsArr(
   classArr,
@@ -83,4 +98,6 @@ export {
   updateSvgColor,
   updateElementsProperty,
   updateElementsAttribute,
+  throwError,
+  SERVER_URL,
 };
