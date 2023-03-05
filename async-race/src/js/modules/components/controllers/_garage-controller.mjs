@@ -1,18 +1,16 @@
 import GarageModel from '../models/_garage-model.mjs';
-import { SERVER_URL } from '../../utils/_utils.mjs';
+import BaseController from './_base-controller.mjs';
 
-export default class GarageController {
-  #garage;
-
+export default class GarageController extends BaseController {
   constructor() {
-    this.#garage = new GarageModel(SERVER_URL);
+    super(GarageModel);
   }
 
   async getCars() {
-    return this.#garage.getCars();
+    return this.model.getCars();
   }
 
   getRequestURL() {
-    return this.#garage.requestURL;
+    return this.model.requestURL;
   }
 }

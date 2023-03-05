@@ -66,6 +66,11 @@ body {
   }
 }
 .view-controller {
+  > * {
+    &:not(:last-child) {
+      margin-right: 10px;
+    }
+  }
   &__toggler {
     @include controller-button($royal-purple, $cornflower-blue);
   }

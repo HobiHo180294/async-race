@@ -1,40 +1,35 @@
-export default class GarageModel {
-  #requestURL;
+import BaseModel from './_base-model.mjs';
+import { requestEndpoints, requestHeaders } from '../../utils/_utils.mjs';
 
+const PAGINATION_VIEW_PAGE_ELEMENT = document.querySelector(
+  '.pagination-view__page'
+);
+
+const MAX_CARS_PER_PAGE = 7;
+
+export default class GarageModel extends BaseModel {
   #page;
 
-  #garageEndpoint = '/garage';
-
-  #xTotalCountHeader = 'X-Total-Count';
-
-  constructor(apiURL) {
-    this.#page = Number(
-      document.querySelector('.pagination-view__page').textContent
-    );
-    this.#requestURL = apiURL;
+  constructor() {
+    super(requestEndpoints.garage);
+    this.#page = Number(PAGINATION_VIEW_PAGE_ELEMENT.textContent);
   }
 
-  async getCars(page = this.#page, limit = 7) {
-    const url = new URL(this.#requestURL + this.#garageEndpoint);
-
+  async getCars(page = this.#page, limit = MAX_CARS_PER_PAGE) {
     const params = {
       _page: page,
       _limit: limit,
     };
 
     Object.entries(params).forEach(([key, value]) => {
-      url.searchParams.append(key, value);
+      this.requestURL.searchParams.append(key, value);
     });
 
-    const response = await fetch(url.toString());
+    const response = await fetch(this.requestURL.toString());
 
     return {
       data: await response.json(),
-      limit: Number(response.headers.get(this.#xTotalCountHeader)),
+      limit: Number(response.headers.get(requestHeaders.xTotalCount)),
     };
-  }
-
-  get requestURL() {
-    return this.#requestURL;
   }
 }

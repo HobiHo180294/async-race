@@ -1,17 +1,14 @@
-export default class AsyncRaceAPIModel {
-  #apiURL;
+import BaseModel from './_base-model.mjs';
+import { requestEndpoints } from '../../utils/_utils.mjs';
 
-  constructor(apiURL) {
-    this.#apiURL = apiURL;
-  }
-
-  get apiURL() {
-    return this.#apiURL;
+export default class AsyncRaceAPIModel extends BaseModel {
+  constructor() {
+    super(requestEndpoints.asyncRace);
   }
 
   async isReachable() {
     try {
-      const response = await fetch(this.apiURL);
+      const response = await fetch(this.requestURL);
       return response.status === 200;
     } catch (error) {
       return { errorName: error.name, errorMessage: error.message };

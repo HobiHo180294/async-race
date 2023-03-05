@@ -1,9 +1,10 @@
 import AsyncRaceAPIController from '../controllers/_api-controller.mjs';
+import BaseView from './_base-view.mjs';
 import { throwError } from '../../utils/_utils.mjs';
 
-export default class AsyncRaceAPIView {
+export default class AsyncRaceAPIView extends BaseView {
   constructor() {
-    this.apiController = new AsyncRaceAPIController();
+    super(AsyncRaceAPIController);
   }
 
   async renderModelReachability() {

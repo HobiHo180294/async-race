@@ -1,4 +1,5 @@
 import GarageController from '../controllers/_garage-controller.mjs';
+import BaseView from './_base-view.mjs';
 import DOMElement from '../../objects/_dom-element.mjs';
 import {
   fillElementsArr,
@@ -52,13 +53,13 @@ const tagsArr = ['div', 'button', ['button', 'button', 'h3'], 'img'];
 const viewContent = document.querySelector('.view__content');
 const viewContentGroup = new DOMElement('div', 'view__content_group');
 
-export default class GarageView {
+export default class GarageView extends BaseView {
   constructor() {
-    this.garageController = new GarageController();
+    super(GarageController);
   }
 
   async renderInitialState() {
-    const totalCars = await this.garageController.getCars();
+    const totalCars = await this.apiController.getCars();
 
     GarageView.#createViewContentGroups(totalCars.limit);
     GarageView.#fillViewContentClasses();
@@ -124,32 +125,16 @@ export default class GarageView {
     });
   }
 
-  static #getCarFieldCopy(carFrag) {
-    const carFieldCopy = carFrag.cloneNode(true);
-
-    viewContentChildren.forEach((child) =>
-      carFieldCopy.append(child.cloneNode(true))
-    );
-
-    contentEngineChildren.forEach((child) =>
-      carFieldCopy
-        .querySelectorAll('.content__engine')
-        .forEach((engine) => engine.append(child.cloneNode(true)))
-    );
-
-    contentControls.forEach((child) =>
-      carFieldCopy
-        .querySelectorAll('.content__controls')
-        .forEach((controller) => controller.append(child.cloneNode(true)))
-    );
-
-    contentFieldChildren.forEach((child) =>
-      carFieldCopy
-        .querySelectorAll('.content__field')
-        .forEach((field) => field.append(child.cloneNode(true)))
-    );
-
-    return carFieldCopy;
+  static #renderGetCarsResponse(
+    contentGroupCollection,
+    totalCarsCountElem,
+    responseData,
+    responseLimit
+  ) {
+    GarageView.#displayCarNames(responseData);
+    GarageView.#fillCarImgColors(responseData);
+    GarageView.#setContentGroupID(contentGroupCollection, responseData);
+    GarageView.#displayTotalCarsCount(totalCarsCountElem, responseLimit);
   }
 
   static #displayCarNames(
@@ -183,15 +168,31 @@ export default class GarageView {
     );
   }
 
-  static #renderGetCarsResponse(
-    contentGroupCollection,
-    totalCarsCountElem,
-    responseData,
-    responseLimit
-  ) {
-    GarageView.#displayCarNames(responseData);
-    GarageView.#fillCarImgColors(responseData);
-    GarageView.#setContentGroupID(contentGroupCollection, responseData);
-    GarageView.#displayTotalCarsCount(totalCarsCountElem, responseLimit);
+  static #getCarFieldCopy(carFrag) {
+    const carFieldCopy = carFrag.cloneNode(true);
+
+    viewContentChildren.forEach((child) => {
+      carFieldCopy.append(child.cloneNode(true));
+    });
+
+    contentEngineChildren.forEach((child) => {
+      carFieldCopy
+        .querySelectorAll('.content__engine')
+        .forEach((engine) => engine.append(child.cloneNode(true)));
+    });
+
+    contentControls.forEach((child) => {
+      carFieldCopy
+        .querySelectorAll('.content__controls')
+        .forEach((controller) => controller.append(child.cloneNode(true)));
+    });
+
+    contentFieldChildren.forEach((child) => {
+      carFieldCopy
+        .querySelectorAll('.content__field')
+        .forEach((field) => field.append(child.cloneNode(true)));
+    });
+
+    return carFieldCopy;
   }
 }

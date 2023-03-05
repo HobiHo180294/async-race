@@ -3,8 +3,8 @@ import './style.scss';
 import AsyncRaceAPIView from '../../js/modules/components/views/_api-view.mjs';
 import GarageView from '../../js/modules/components/views/_garage-view.mjs';
 
-const view = new AsyncRaceAPIView();
-await view.renderModelReachability();
+const asyncRaceAPI = new AsyncRaceAPIView();
+await asyncRaceAPI.renderModelReachability();
 
-const garageControl = new GarageView();
-await garageControl.renderInitialState();
+const garagePage = new GarageView();
+await garagePage.renderInitialState();

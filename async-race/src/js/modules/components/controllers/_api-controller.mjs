@@ -1,18 +1,12 @@
 import AsyncRaceAPIModel from '../models/_api-model.mjs';
-import { SERVER_URL } from '../../utils/_utils.mjs';
+import BaseController from './_base-controller.mjs';
 
-export default class AsyncRaceAPIController {
-  #asyncRaceAPIInstance;
-
+export default class AsyncRaceAPIController extends BaseController {
   constructor() {
-    this.#asyncRaceAPIInstance = new AsyncRaceAPIModel(SERVER_URL);
+    super(AsyncRaceAPIModel);
   }
 
   async isModelReachable() {
-    return this.#asyncRaceAPIInstance.isReachable();
-  }
-
-  getApiURL() {
-    return this.#asyncRaceAPIInstance.apiURL;
+    return this.model.isReachable();
   }
 }

@@ -5,6 +5,15 @@ const SERVER_URL = 'http://127.0.0.1:3000';
 const SVG_DATA_URL_PREFIX = 'data:image/svg+xml;base64,';
 const SVG_MIME_TYPE = 'image/svg+xml';
 
+const requestEndpoints = {
+  asyncRace: '',
+  garage: '/garage',
+};
+
+const requestHeaders = {
+  xTotalCount: 'X-Total-Count',
+};
+
 function throwError(errorType, errorMessage) {
   switch (errorType) {
     case 'TypeError':
@@ -28,13 +37,9 @@ function fillElementsArr(
   let tagNamesCopy = tagNames;
   let textContentCopy = textContent;
 
-  if (!Array.isArray(tagNames)) {
-    tagNamesCopy = [tagNames];
-  }
+  if (!Array.isArray(tagNames)) tagNamesCopy = [tagNames];
 
-  if (!Array.isArray(textContent)) {
-    textContentCopy = [textContent];
-  }
+  if (!Array.isArray(textContent)) textContentCopy = [textContent];
 
   for (let i = 0; i < classArr.length; i++) {
     const tagName = tagNamesCopy[i % tagNamesCopy.length];
@@ -93,11 +98,18 @@ function updateElementsAttribute(
   });
 }
 
+function getRequestURL(endpoint) {
+  return new URL(SERVER_URL + endpoint);
+}
+
 export {
   fillElementsArr,
   updateSvgColor,
   updateElementsProperty,
   updateElementsAttribute,
   throwError,
+  getRequestURL,
+  requestEndpoints,
+  requestHeaders,
   SERVER_URL,
 };
