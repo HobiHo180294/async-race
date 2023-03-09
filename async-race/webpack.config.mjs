@@ -20,9 +20,11 @@ export default {
   target,
   devtool,
   devServer: {
-    port: 3000,
+    port: 8080,
+    compress: true,
     open: true,
     hot: true,
+    historyApiFallback: true,
   },
   context: path.resolve(__dirname, 'src'),
 

@@ -1,7 +1,5 @@
 import DOMElement from '../objects/_dom-element.mjs';
 
-const SERVER_URL = 'http://127.0.0.1:3000';
-
 const SVG_DATA_URL_PREFIX = 'data:image/svg+xml;base64,';
 const SVG_MIME_TYPE = 'image/svg+xml';
 
@@ -27,6 +25,18 @@ function throwError(errorType, errorMessage) {
   }
 }
 
+function makeArrayFromInputs(item) {
+  return Array.isArray(item) ? item : [item];
+}
+
+function getArrLength(array) {
+  return array.length;
+}
+
+function getIndexedValue(arr, len, index) {
+  return arr[index % len];
+}
+
 function fillElementsArr(
   classArr,
   elemArr,
@@ -34,16 +44,14 @@ function fillElementsArr(
   attributes = {},
   textContent = ''
 ) {
-  let tagNamesCopy = tagNames;
-  let textContentCopy = textContent;
-
-  if (!Array.isArray(tagNames)) tagNamesCopy = [tagNames];
-
-  if (!Array.isArray(textContent)) textContentCopy = [textContent];
+  const tagNamesArr = makeArrayFromInputs(tagNames);
+  const textContentArr = makeArrayFromInputs(textContent);
+  const tagNamesLen = getArrLength(tagNamesArr);
+  const textContentLen = getArrLength(textContentArr);
 
   for (let i = 0; i < classArr.length; i++) {
-    const tagName = tagNamesCopy[i % tagNamesCopy.length];
-    const textValue = textContentCopy[i % textContentCopy.length];
+    const tagName = getIndexedValue(tagNamesArr, tagNamesLen, i);
+    const textValue = getIndexedValue(textContentArr, textContentLen, i);
     const element = new DOMElement(tagName, classArr[i], attributes, textValue);
     elemArr.push(element.value);
   }
@@ -55,19 +63,16 @@ async function updateSvgColor(url, color) {
   const parser = new DOMParser();
   const svgDoc = parser.parseFromString(text, SVG_MIME_TYPE);
 
-  // Change the color of the SVG elements
   const svgElements = svgDoc.querySelectorAll('path, circle');
   svgElements.forEach((element) => {
     const elementCopy = element;
     elementCopy.style.fill = color;
   });
 
-  // Encode the updated SVG code as a data URL
   const svgCode = svgDoc.documentElement.outerHTML;
   const encodedSvg = btoa(svgCode);
   const dataUrl = SVG_DATA_URL_PREFIX + encodedSvg;
 
-  // Return the data URL for the updated SVG image
   return dataUrl;
 }
 
@@ -98,8 +103,34 @@ function updateElementsAttribute(
   });
 }
 
-function getRequestURL(endpoint) {
-  return new URL(SERVER_URL + endpoint);
+function getRequestURL(baseURL, endpoint) {
+  return new URL(baseURL + endpoint);
+}
+
+async function triggerRouterAfterPageRefresh(Router) {
+  window.addEventListener('beforeunload', () => {
+    localStorage.setItem('unload', Date.now());
+  });
+
+  const DECIDED_TIME = 1000;
+
+  const lastUnload = localStorage.getItem('unload');
+  const lastUnloadTimestamp = parseInt(lastUnload, 10);
+
+  if (lastUnload)
+    if (Date.now() - lastUnloadTimestamp <= DECIDED_TIME) {
+      const currentPathname = window.location.pathname;
+
+      window.history.replaceState(
+        {
+          requestEndpoint: currentPathname,
+        },
+        '',
+        currentPathname
+      );
+
+      await Router.renderContent();
+    } else await Router.renderContent();
 }
 
 export {
@@ -111,5 +142,5 @@ export {
   getRequestURL,
   requestEndpoints,
   requestHeaders,
-  SERVER_URL,
+  triggerRouterAfterPageRefresh,
 };

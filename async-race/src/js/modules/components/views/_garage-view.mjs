@@ -6,12 +6,11 @@ import {
   updateElementsProperty,
   updateElementsAttribute,
   updateSvgColor,
+  requestEndpoints,
 } from '../../utils/_utils.mjs';
 import carImage from '../../../../assets/images/car.svg';
 
 const carFragment = new DocumentFragment();
-
-const totalCarsCountElement = document.querySelector('.view__page');
 
 const viewContentChildrenClasses = [
   'content__controls controls-content',
@@ -59,19 +58,32 @@ export default class GarageView extends BaseView {
   }
 
   async renderInitialState() {
+    if (window.location.pathname !== requestEndpoints.garage)
+      window.history.replaceState(
+        {
+          requestEndpoint: requestEndpoints.garage,
+        },
+        '',
+        requestEndpoints.garage
+      );
+
+    const totalCarsCountElement = document.querySelector('.view__page');
+
     const totalCars = await this.apiController.getCars();
+    const totalCarsLimit = totalCars.limit;
 
-    GarageView.#createViewContentGroups(totalCars.limit);
-    GarageView.#fillViewContentClasses();
-
+    GarageView.#createViewContentGroups(totalCarsLimit);
     const viewContentGroups = document.querySelectorAll('.view__content_group');
+
+    GarageView.#fillViewContentClasses(totalCarsLimit);
+
     GarageView.#drawCarField(viewContentGroups, carFragment);
 
     GarageView.#renderGetCarsResponse(
       viewContentGroups,
       totalCarsCountElement,
       totalCars.data,
-      totalCars.limit
+      totalCarsLimit
     );
   }
 
@@ -82,7 +94,15 @@ export default class GarageView extends BaseView {
     }
   }
 
-  static #fillViewContentClasses() {
+  static #fillViewContentClasses(totalCarsLimit) {
+    if (viewContent.childElementCount === totalCarsLimit) {
+      const hasNonEmptyArray = viewContentElemsArrs.some(
+        (arr) => arr.length > 0
+      );
+
+      if (hasNonEmptyArray) return;
+    }
+
     viewContentClassesArrs.forEach((classElem, index) => {
       switch (classElem) {
         case contentFieldClasses:
@@ -159,11 +179,15 @@ export default class GarageView extends BaseView {
   }
 
   static #displayTotalCarsCount(totalCarsCountElem, count) {
-    const countElement = document.createElement(totalCarsCountElem.tagName);
-    countElement.classList.add(totalCarsCountElem.className);
-    countElement.textContent = count;
+    const countElement = new DOMElement(
+      totalCarsCountElem.tagName,
+      totalCarsCountElem.className,
+      {},
+      String(count)
+    );
+
     totalCarsCountElem.parentNode.replaceChild(
-      countElement,
+      countElement.value,
       totalCarsCountElem
     );
   }
