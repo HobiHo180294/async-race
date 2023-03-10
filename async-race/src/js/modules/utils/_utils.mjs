@@ -5,7 +5,9 @@ const SVG_MIME_TYPE = 'image/svg+xml';
 
 const requestEndpoints = {
   asyncRace: '',
+  root: '/',
   garage: '/garage',
+  winners: '/winners',
 };
 
 const requestHeaders = {
@@ -48,11 +50,19 @@ function fillElementsArr(
   const textContentArr = makeArrayFromInputs(textContent);
   const tagNamesLen = getArrLength(tagNamesArr);
   const textContentLen = getArrLength(textContentArr);
+  const attributesArr = makeArrayFromInputs(attributes);
+  const attributesLen = getArrLength(attributesArr);
 
   for (let i = 0; i < classArr.length; i++) {
     const tagName = getIndexedValue(tagNamesArr, tagNamesLen, i);
     const textValue = getIndexedValue(textContentArr, textContentLen, i);
-    const element = new DOMElement(tagName, classArr[i], attributes, textValue);
+    const attributesObj = getIndexedValue(attributesArr, attributesLen, i);
+    const element = new DOMElement(
+      tagName,
+      classArr[i],
+      attributesObj,
+      textValue
+    );
     elemArr.push(element.value);
   }
 }
@@ -107,7 +117,7 @@ function getRequestURL(baseURL, endpoint) {
   return new URL(baseURL + endpoint);
 }
 
-async function triggerRouterAfterPageRefresh(Router) {
+async function triggerRouterAfterPageLoad(Router) {
   window.addEventListener('beforeunload', () => {
     localStorage.setItem('unload', Date.now());
   });
@@ -133,6 +143,22 @@ async function triggerRouterAfterPageRefresh(Router) {
     } else await Router.renderContent();
 }
 
+function getElementByClassName(arrayOfElements, className) {
+  return arrayOfElements.find((element) =>
+    element.classList.contains(className)
+  );
+}
+
+function appendChildren(parent, childrenArr) {
+  childrenArr.forEach((child) => {
+    parent.appendChild(child);
+  });
+}
+
+function getFragmentClone(documentFragment) {
+  return documentFragment.cloneNode(true);
+}
+
 export {
   fillElementsArr,
   updateSvgColor,
@@ -142,5 +168,8 @@ export {
   getRequestURL,
   requestEndpoints,
   requestHeaders,
-  triggerRouterAfterPageRefresh,
+  triggerRouterAfterPageLoad,
+  getElementByClassName,
+  appendChildren,
+  getFragmentClone,
 };

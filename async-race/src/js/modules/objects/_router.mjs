@@ -1,4 +1,5 @@
 import GarageView from '../components/views/_garage-view.mjs';
+import { requestEndpoints } from '../utils/_utils.mjs';
 
 const viewContent = document.querySelector('.view__content');
 
@@ -9,12 +10,12 @@ export default class Router {
     const url = window.location.pathname;
 
     switch (url) {
-      case '/':
-      case '/garage':
+      case requestEndpoints.root:
+      case requestEndpoints.garage:
         await garagePage.renderInitialState();
         break;
 
-      case '/winners':
+      case requestEndpoints.winners:
         viewContent.innerHTML = '';
         break;
 

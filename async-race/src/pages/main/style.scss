@@ -117,6 +117,10 @@ body {
       @include controller-button($royal-purple, $cornflower-blue);
     }
 
+    &:first-child {
+      margin-right: 10px;
+    }
+
     &:last-child {
       @include controller-button($cornflower-blue, $seafoam-green);
     }
