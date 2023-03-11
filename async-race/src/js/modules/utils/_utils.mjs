@@ -2,6 +2,7 @@ import DOMElement from '../objects/_dom-element.mjs';
 
 const SVG_DATA_URL_PREFIX = 'data:image/svg+xml;base64,';
 const SVG_MIME_TYPE = 'image/svg+xml';
+const DEFAULT_TITLE_STATE = '';
 
 const requestEndpoints = {
   asyncRace: '',
@@ -159,6 +160,14 @@ function getFragmentClone(documentFragment) {
   return documentFragment.cloneNode(true);
 }
 
+function getCurrentMarkupFragment(currentFragment, currentElement) {
+  return currentFragment.appendChild(currentElement);
+}
+
+function appendMarkup(pageWrapper, ...markUpParts) {
+  pageWrapper.append(...markUpParts);
+}
+
 export {
   fillElementsArr,
   updateSvgColor,
@@ -172,4 +181,7 @@ export {
   getElementByClassName,
   appendChildren,
   getFragmentClone,
+  getCurrentMarkupFragment,
+  appendMarkup,
+  DEFAULT_TITLE_STATE,
 };

@@ -1,21 +1,26 @@
-import GarageView from '../components/views/_garage-view.mjs';
 import { requestEndpoints } from '../utils/_utils.mjs';
-
-const viewContent = document.querySelector('.view__content');
-
-const garagePage = new GarageView();
 
 export default class Router {
   static async renderContent() {
+    const GarageViewModule = await import(
+      '../components/views/_garage-view.mjs'
+    );
+    const GarageView = GarageViewModule.default;
+
+    let garagePage;
+    let viewContent;
+
     const url = window.location.pathname;
 
     switch (url) {
       case requestEndpoints.root:
       case requestEndpoints.garage:
+        garagePage = new GarageView();
         await garagePage.renderInitialState();
         break;
 
       case requestEndpoints.winners:
+        viewContent = document.querySelector('.view__content');
         viewContent.innerHTML = '';
         break;
 

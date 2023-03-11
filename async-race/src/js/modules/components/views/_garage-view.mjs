@@ -7,6 +7,7 @@ import {
   updateElementsAttribute,
   updateSvgColor,
   requestEndpoints,
+  DEFAULT_TITLE_STATE,
 } from '../../utils/_utils.mjs';
 import carImage from '../../../../assets/images/car.svg';
 
@@ -63,7 +64,7 @@ export default class GarageView extends BaseView {
         {
           requestEndpoint: requestEndpoints.garage,
         },
-        '',
+        DEFAULT_TITLE_STATE,
         requestEndpoints.garage
       );
 

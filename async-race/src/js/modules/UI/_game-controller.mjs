@@ -5,6 +5,7 @@ import {
   getElementByClassName,
   appendChildren,
   getFragmentClone,
+  getCurrentMarkupFragment,
 } from '../utils/_utils.mjs';
 
 // * FUNCTIONS
@@ -198,14 +199,17 @@ function createGameControllerMarkup() {
 }
 
 function getGameControllerMarkup() {
-  return gameController.appendChild(controller);
+  return getCurrentMarkupFragment(gameController, controller);
 }
 
-function showGameControllerMarkup(pageWrapper) {
-  const gameControllerMarkup = getGameControllerMarkup();
-  pageWrapper.prepend(gameControllerMarkup);
-}
+// function showGameControllerMarkup(pageWrapper) {
+//   const gameControllerMarkup = getCurrentMarkupFragment(
+//     gameController,
+//     controller
+//   );
+//   pageWrapper.prepend(gameControllerMarkup);
+// }
 
 createGameControllerMarkup();
 
-export default showGameControllerMarkup;
+export default getGameControllerMarkup;
