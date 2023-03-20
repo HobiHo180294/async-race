@@ -2,59 +2,29 @@ import './index.html';
 import './style.scss';
 import AsyncRaceAPIView from '../../js/modules/components/views/_api-view.mjs';
 import Router from '../../js/modules/objects/_router.mjs';
-import {
-  triggerRouterAfterPageLoad,
-  appendMarkup,
-  DEFAULT_TITLE_STATE,
-} from '../../js/modules/utils/_utils.mjs';
-import getGameControllerMarkup from '../../js/modules/UI/_game-controller.mjs';
-import getViewFieldMarkup from '../../js/modules/UI/_view-field.mjs';
+import getBaseGameControllerMarkupFragment from '../../js/modules/UI/base/_base-game-controller.mjs';
+import getBaseViewMarkup from '../../js/modules/UI/base/_base-view-field.mjs';
 import DOMElement from '../../js/modules/objects/_dom-element.mjs';
 
-const BUTTON_TAG_NAME = 'A';
-
-function initMarkup() {
+function initBaseMarkup() {
   const pageWrapper = new DOMElement('div', '_wrapper').value;
 
-  const gameControllerPart = getGameControllerMarkup();
-  const viewPart = getViewFieldMarkup();
+  const gameControllerPart = getBaseGameControllerMarkupFragment();
+  const viewPart = getBaseViewMarkup();
 
-  appendMarkup(pageWrapper, gameControllerPart, viewPart);
-
+  pageWrapper.append(gameControllerPart, viewPart);
   document.body.appendChild(pageWrapper);
 }
 
-async function handlePageState(event) {
-  if (event.target.tagName === BUTTON_TAG_NAME) {
-    event.preventDefault();
-    const url = event.target.getAttribute('href');
-
-    if (url !== window.location.pathname) {
-      window.history.pushState(
-        {
-          requestEndpoint: url,
-        },
-        DEFAULT_TITLE_STATE,
-        url
-      );
-
-      await Router.renderContent();
-    }
-  }
-}
-
-document.addEventListener('DOMContentLoaded', initMarkup);
+document.addEventListener('DOMContentLoaded', initBaseMarkup);
 
 const asyncRaceAPI = new AsyncRaceAPIView();
 await asyncRaceAPI.renderModelReachability();
 
-document.addEventListener(
-  'DOMContentLoaded',
-  await triggerRouterAfterPageLoad(Router)
-);
+window.addEventListener('load', Router.triggerOnPageLoad);
 
-window.addEventListener('popstate', async () => {
-  await Router.renderContent();
-});
+window.addEventListener('popstate', Router.renderContent);
 
-document.addEventListener('click', handlePageState);
+document.addEventListener('click', Router.handlePageState);
+
+export default initBaseMarkup;

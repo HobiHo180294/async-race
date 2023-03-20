@@ -54,6 +54,14 @@
   height: 0;
 }
 
+%winners-controller {
+  display: none;
+}
+
+%hidden {
+  visibility: hidden;
+}
+
 // ! MIXINS
 @mixin controller-button($background-color, $color) {
   border-radius: 10px;
@@ -67,8 +75,12 @@
   cursor: pointer;
   transition: all 0.3s ease-in 0s;
 
-  &:hover,
-  &:active {
+  &:hover {
+    background-color: $color;
+    color: $background-color;
+  }
+
+  &._active-page {
     background-color: $color;
     color: $background-color;
   }

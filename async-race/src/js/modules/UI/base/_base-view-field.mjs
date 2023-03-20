@@ -1,27 +1,11 @@
-import DOMElement from '../objects/_dom-element.mjs';
+import DOMElement from '../../objects/_dom-element.mjs';
 import {
-  fillElementsArr,
   getElementByClassName,
-  appendChildren,
   getCurrentMarkupFragment,
-} from '../utils/_utils.mjs';
-
-function fillViewFieldClasses(
-  viewFieldClassesArr,
-  viewFieldChildrenArr,
-  viewFieldTagsArr,
-  viewFieldTextsArr
-) {
-  viewFieldClassesArr.forEach((classArr, index) => {
-    fillElementsArr(
-      classArr,
-      viewFieldChildrenArr[index],
-      viewFieldTagsArr[index],
-      {},
-      viewFieldTextsArr[index]
-    );
-  });
-}
+  fillContentElements,
+  requestEndpoints,
+} from '../../utils/_utils.mjs';
+import getWinnersTableSkeleton from '../winners/_layout-fragment.mjs';
 
 // * DOCUMENT FRAGMENTS
 const viewField = new DocumentFragment();
@@ -63,50 +47,74 @@ const viewPaginationTexts = ['Prev', '1', 'Next'];
 
 const viewFieldTexts = [viewContainerTexts, viewPaginationTexts];
 
+// * ATTRIBUTES
+
+const viewFieldAttributes = {};
+
 // * ELEMENTS MODIFICATION
-fillViewFieldClasses(
+fillContentElements(
   viewFieldClasses,
   viewFieldChildren,
   viewFieldTags,
+  viewFieldAttributes,
   viewFieldTexts
 );
 
-function createViewMarkup() {
-  const viewTitleElement = getElementByClassName(
-    viewContainerChildren,
-    'view__title'
+const viewTitleElement = getElementByClassName(
+  viewContainerChildren,
+  'view__title'
+);
+
+function createViewTitle() {
+  const viewTitleBeginning = document.createTextNode(
+    `${
+      window.location.pathname === requestEndpoints.winners
+        ? 'Winners ('
+        : 'Garage ('
+    }`
   );
+  const viewPageElement = new DOMElement('span', 'view__page', {}, '0').value;
+  const viewTitleEnding = document.createTextNode(')');
+
+  viewTitleElement.append(viewTitleBeginning, viewPageElement, viewTitleEnding);
+}
+
+function appendViewChildren(viewParents, viewChildren) {
+  viewParents.forEach((parent, index) => {
+    parent.append(...viewChildren[index]);
+  });
+}
+
+function createBaseViewMarkup() {
+  const viewContent = getElementByClassName(
+    viewContainerChildren,
+    'view__content'
+  );
+
+  if (window.location.pathname === requestEndpoints.winners) {
+    const tableSkeleton = getWinnersTableSkeleton();
+    viewContent.append(tableSkeleton);
+  } else if (viewContent.innerHTML !== '') viewContent.innerHTML = '';
 
   const viewPaginationElement = getElementByClassName(
     viewContainerChildren,
     'pagination-view'
   );
 
-  const viewTitleBeginning = document.createTextNode('Garage (');
-  const viewPageElement = new DOMElement('span', 'view__page', {}, '0').value;
-  const viewTitleEnding = document.createTextNode(')');
-
-  viewTitleElement.append(viewTitleBeginning, viewPageElement, viewTitleEnding);
-
   const viewParents = [viewPaginationElement, viewContainer];
   const viewFieldChildrenReverse = viewFieldChildren.reverse();
 
-  viewParents.forEach((parent, index) => {
-    appendChildren(parent, viewFieldChildrenReverse[index]);
-  });
+  createViewTitle();
+
+  appendViewChildren(viewParents, viewFieldChildrenReverse);
 
   viewStart.appendChild(viewContainer);
 }
 
-function getViewFieldMarkup() {
+function getBaseViewMarkup() {
+  createBaseViewMarkup();
+
   return getCurrentMarkupFragment(viewField, viewStart);
 }
 
-// function showViewMarkup(pageWrapper) {
-//   const viewFieldMarkup = ;
-//   pageWrapper.appendChild(viewFieldMarkup);
-// }
-
-createViewMarkup();
-
-export default getViewFieldMarkup;
+export default getBaseViewMarkup;

@@ -8,6 +8,7 @@ import {
   updateSvgColor,
   requestEndpoints,
   DEFAULT_TITLE_STATE,
+  removeChildrenWithoutClass,
 } from '../../utils/_utils.mjs';
 import carImage from '../../../../assets/images/car.svg';
 
@@ -59,7 +60,7 @@ export default class GarageView extends BaseView {
   }
 
   async renderInitialState() {
-    if (window.location.pathname !== requestEndpoints.garage)
+    if (window.location.pathname === requestEndpoints.root)
       window.history.replaceState(
         {
           requestEndpoint: requestEndpoints.garage,
@@ -67,6 +68,9 @@ export default class GarageView extends BaseView {
         DEFAULT_TITLE_STATE,
         requestEndpoints.garage
       );
+
+    if (viewContent.innerHTML !== '')
+      removeChildrenWithoutClass(viewContent, 'view__content_group');
 
     const totalCarsCountElement = document.querySelector('.view__page');
 

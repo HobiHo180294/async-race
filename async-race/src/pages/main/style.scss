@@ -45,6 +45,15 @@ body {
   @extend %wrapper;
   background-color: $midnight-blue;
 }
+
+._winners-controller {
+  @extend %winners-controller;
+}
+
+._hidden {
+  @extend %hidden;
+}
+
 /* Presets and common styles end*/
 
 .controller {
@@ -155,6 +164,9 @@ body {
     &_group {
       margin-bottom: 30px;
     }
+
+    &_table {
+    }
   }
 
   &__pagination {
@@ -238,6 +250,29 @@ body {
   &__image {
     position: relative;
     z-index: 2;
+  }
+}
+
+.content-table {
+  &__head {
+  }
+
+  &__body {
+  }
+}
+
+.table-head {
+  &__row {
+  }
+}
+
+.head-row {
+  > * {
+    color: $pure-white;
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+    padding: 5px 60px 10px 5px;
+    border-bottom: 1px solid $pure-white;
   }
 }
 
