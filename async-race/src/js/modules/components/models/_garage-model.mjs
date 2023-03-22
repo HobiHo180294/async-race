@@ -1,21 +1,16 @@
 import BaseModel from './_base-model.mjs';
-import { requestEndpoints, requestHeaders } from '../../utils/_utils.mjs';
-
-const PAGINATION_VIEW_PAGE_ELEMENT = document.querySelector(
-  '.pagination-view__page'
-);
-
-const MAX_CARS_PER_PAGE = 7;
+import {
+  getRequestURL,
+  requestEndpoints,
+  requestHeaders,
+} from '../../utils/_utils.mjs';
 
 export default class GarageModel extends BaseModel {
-  #page;
-
   constructor() {
     super(requestEndpoints.garage);
-    this.#page = Number(PAGINATION_VIEW_PAGE_ELEMENT.textContent);
   }
 
-  async getCars(page = this.#page, limit = MAX_CARS_PER_PAGE) {
+  async getCars(page, limit) {
     const params = {
       _page: page,
       _limit: limit,
@@ -27,9 +22,106 @@ export default class GarageModel extends BaseModel {
 
     const response = await fetch(this.requestURL.toString());
 
+    this.requestURL.search = '';
+
     return {
       data: await response.json(),
       limit: Number(response.headers.get(requestHeaders.xTotalCount)),
+    };
+  }
+
+  async getCar(id) {
+    const requestStr = getRequestURL(
+      this.requestURL.toString(),
+      `/${id}`
+    ).toString();
+
+    const response = await fetch(requestStr);
+    const responseData = await response.json();
+
+    if (!response.ok)
+      return {
+        statusCode: response.status,
+        statusText: response.statusText,
+        data: responseData,
+      };
+
+    return {
+      data: responseData,
+    };
+  }
+
+  async createCar(name, color) {
+    const response = await fetch(this.requestURL.toString(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        color,
+      }),
+    });
+
+    const responseData = await response.json();
+
+    return {
+      name: responseData.name,
+      color: responseData.color,
+      id: responseData.id,
+    };
+  }
+
+  async deleteCar(id) {
+    const requestStr = getRequestURL(
+      this.requestURL.toString(),
+      `/${id}`
+    ).toString();
+
+    const response = await fetch(requestStr, {
+      method: 'DELETE',
+    });
+    const responseData = await response.json();
+
+    if (!response.ok)
+      return {
+        statusCode: response.status,
+        statusText: response.statusText,
+        data: responseData,
+      };
+
+    return {
+      data: responseData,
+    };
+  }
+
+  async updateCar(id, name, color) {
+    const requestStr = getRequestURL(
+      this.requestURL.toString(),
+      `/${id}`
+    ).toString();
+
+    const response = await fetch(requestStr, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        color,
+      }),
+    });
+    const responseData = await response.json();
+
+    if (!response.ok)
+      return {
+        statusCode: response.status,
+        statusText: response.statusText,
+        data: responseData,
+      };
+
+    return {
+      name: responseData.name,
+      color: responseData.color,
+      id: responseData.id,
     };
   }
 }

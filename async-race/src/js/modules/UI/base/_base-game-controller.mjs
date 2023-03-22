@@ -95,16 +95,8 @@ function getBaseGameController() {
 
     highlightActivePageButton(currentPageButton);
 
-    if (window.location.pathname === requestEndpoints.winners)
-      controllerBody.append(...controllerBodyChildren);
-    else {
-      const garageControllerFragment = getGarageControllerFragment();
-      controllerBody.append(
-        ...controllerBodyChildren,
-        garageControllerFragment
-      );
-    }
-
+    const garageControllerFragment = getGarageControllerFragment();
+    controllerBody.append(...controllerBodyChildren, garageControllerFragment);
     controllerContainer.appendChild(controllerBody);
     controller.appendChild(controllerContainer);
 

@@ -1,8 +1,9 @@
 import DOMElement from '../../objects/_dom-element.mjs';
 import {
-  fillElementsArr,
+  fillContentElements,
   getElementByClassName,
   getFragmentClone,
+  addActionClassNames,
 } from '../../utils/_utils.mjs';
 
 // * CLASSES
@@ -12,7 +13,7 @@ const controllerBodyClasses = [
 ];
 
 const optionsControllerWrapperClasses = [
-  'option-controller__car _car-name__input',
+  'option-controller__car',
   'option-controller__color',
   'option-controller__button',
 ];
@@ -52,29 +53,42 @@ const optionsControllerWrapperAttributes = [
 ];
 const controllerButtonsAttributes = {};
 
-fillElementsArr(
+const contentClassesArr = [
   controllerBodyClasses,
-  controllerBodyChildren,
-  controllerBodyTags,
-  controllerBodyAttributes,
-
-  controllerBodyText
-);
-
-fillElementsArr(
   optionsControllerWrapperClasses,
-  optionsControllerWrapperChildren,
-  optionsControllerWrapperTags,
-  optionsControllerWrapperAttributes,
-  optionsControllerWrapperText
-);
-
-fillElementsArr(
   controllerButtonsClasses,
+];
+
+const contentChildrenArr = [
+  controllerBodyChildren,
+  optionsControllerWrapperChildren,
   controllerButtonsChildren,
+];
+
+const contentTagsArr = [
+  controllerBodyTags,
+  optionsControllerWrapperTags,
   controllerButtonsTags,
+];
+
+const contentAttributesArr = [
+  controllerBodyAttributes,
+  optionsControllerWrapperAttributes,
   controllerButtonsAttributes,
-  controllerButtonsText
+];
+
+const contentTextsArr = [
+  controllerBodyText,
+  optionsControllerWrapperText,
+  controllerButtonsText,
+];
+
+fillContentElements(
+  contentClassesArr,
+  contentChildrenArr,
+  contentTagsArr,
+  contentAttributesArr,
+  contentTextsArr
 );
 
 // * FLAGS
@@ -101,6 +115,37 @@ function getOptionsControllerWrapperFragment() {
   return getFragmentClone(optionsControllerWrapperFragment);
 }
 
+function customizeOptionsControllerButtons(optionsControllerButtons) {
+  addActionClassNames(
+    optionsControllerButtons,
+    'option-controller__button',
+    'button'
+  );
+
+  optionsControllerButtons.forEach((button, index) => {
+    const currentButton = button;
+
+    if (currentButton.textContent === '')
+      currentButton.textContent = optionsControllerButtonsText[index];
+  });
+}
+
+function customizeOptionsControllerInputs(...optionsControllerInputs) {
+  const [nameInputs, colorInputs] = [...optionsControllerInputs];
+
+  addActionClassNames(nameInputs, 'option-controller__car', 'name');
+  addActionClassNames(colorInputs, 'option-controller__color', 'color');
+}
+
+function appendOptionsControllerWrapperFragment(parentElement, times = 2) {
+  for (let i = 0; i < times; i++) {
+    const optionsControllerWrapperFragment =
+      getOptionsControllerWrapperFragment();
+
+    parentElement.appendChild(optionsControllerWrapperFragment);
+  }
+}
+
 function getOptionsControllerElement() {
   const optionsControllerElement = getElementByClassName(
     controllerBodyChildren,
@@ -108,25 +153,22 @@ function getOptionsControllerElement() {
   );
 
   if (!optionsControllerElementExists) {
-    const OPTION_CONTROLLER_WRAPPERS_COUNT = 2;
-
-    for (let i = 0; i < OPTION_CONTROLLER_WRAPPERS_COUNT; i++) {
-      const optionsControllerWrapperFragment =
-        getOptionsControllerWrapperFragment();
-
-      optionsControllerElement.appendChild(optionsControllerWrapperFragment);
-    }
+    appendOptionsControllerWrapperFragment(optionsControllerElement);
 
     const optionsControllerButtons = optionsControllerElement.querySelectorAll(
       '.option-controller__button'
     );
+    const optionsControllerNameInputs =
+      optionsControllerElement.querySelectorAll('.option-controller__car');
+    const optionsControllerColorInputs =
+      optionsControllerElement.querySelectorAll('.option-controller__color');
 
-    optionsControllerButtons.forEach((button, index) => {
-      const currentButton = button;
+    customizeOptionsControllerButtons(optionsControllerButtons);
 
-      if (currentButton.textContent === '')
-        currentButton.textContent = optionsControllerButtonsText[index];
-    });
+    customizeOptionsControllerInputs(
+      optionsControllerNameInputs,
+      optionsControllerColorInputs
+    );
 
     optionsControllerElementExists = true;
   }

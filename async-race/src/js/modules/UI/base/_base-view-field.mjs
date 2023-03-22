@@ -73,7 +73,7 @@ function createViewTitle() {
         : 'Garage ('
     }`
   );
-  const viewPageElement = new DOMElement('span', 'view__page', {}, '0').value;
+  const viewPageElement = new DOMElement('span', 'view__count', {}, '0').value;
   const viewTitleEnding = document.createTextNode(')');
 
   viewTitleElement.append(viewTitleBeginning, viewPageElement, viewTitleEnding);

@@ -4,6 +4,7 @@ import {
   removeChildrenWithoutClass,
   removeFragment,
   requestEndpoints,
+  showFragment,
 } from '../../utils/_utils.mjs';
 import getGarageControllerFragment from '../garage/_layout-fragment.mjs';
 import getWinnersTableSkeleton from '../winners/_layout-fragment.mjs';
@@ -12,17 +13,11 @@ function customizeController(currentPathname) {
   const gameControllerBody = document.querySelector('.controller__body');
   const garageControllerFragment = getGarageControllerFragment();
 
-  if (
-    currentPathname === requestEndpoints.winners &&
-    containsFragment(gameControllerBody, garageControllerFragment)
-  )
+  if (currentPathname === requestEndpoints.winners)
     removeFragment(gameControllerBody, garageControllerFragment);
 
-  if (
-    currentPathname !== requestEndpoints.winners &&
-    !containsFragment(gameControllerBody, garageControllerFragment)
-  )
-    gameControllerBody.append(garageControllerFragment);
+  if (currentPathname !== requestEndpoints.winners)
+    showFragment(gameControllerBody, garageControllerFragment);
 }
 
 function customizeView(currentPathname) {

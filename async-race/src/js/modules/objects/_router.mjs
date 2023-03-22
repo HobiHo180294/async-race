@@ -7,15 +7,24 @@ import {
   customizeController,
   customizeView,
 } from '../UI/base/_customization.mjs';
+import GarageView from '../components/views/_garage-view.mjs';
+import { getSelectedCarInfo } from '../UI/garage/_funcs.mjs';
+
+const garagePage = new GarageView();
+
+async function removeTargetCarGroup(event) {
+  if (event.target.classList.contains('controls-content__remove')) {
+    const targetGroup = event.target.closest('.view__content_group');
+
+    await garagePage.removeCarFromPage(targetGroup.dataset.id);
+
+    targetGroup.remove();
+  }
+}
 
 export default class Router {
   static async renderContent() {
-    const GarageViewModule = await import(
-      '../components/views/_garage-view.mjs'
-    );
-    const GarageView = GarageViewModule.default;
-
-    let garagePage;
+    const viewContent = document.querySelector('.view__content');
     const curentPathname = window.location.pathname;
 
     customizeController(curentPathname);
@@ -24,9 +33,10 @@ export default class Router {
     switch (curentPathname) {
       case requestEndpoints.root:
       case requestEndpoints.garage:
-        // console.log('render garage');
-        garagePage = new GarageView();
         await garagePage.renderInitialState();
+        viewContent.addEventListener('click', removeTargetCarGroup);
+        viewContent.addEventListener('click', getSelectedCarInfo);
+
         break;
 
       case requestEndpoints.winners:
@@ -85,3 +95,5 @@ export default class Router {
       } else await Router.renderContent();
   }
 }
+
+// export default getSelectedCarInfo;

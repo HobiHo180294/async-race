@@ -46,8 +46,8 @@ body {
   background-color: $midnight-blue;
 }
 
-._winners-controller {
-  @extend %winners-controller;
+._fragment-hide {
+  @extend %fragment-hide;
 }
 
 ._hidden {

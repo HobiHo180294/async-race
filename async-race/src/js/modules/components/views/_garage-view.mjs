@@ -1,58 +1,72 @@
 import GarageController from '../controllers/_garage-controller.mjs';
 import BaseView from './_base-view.mjs';
-import DOMElement from '../../objects/_dom-element.mjs';
 import {
-  fillElementsArr,
-  updateElementsProperty,
-  updateElementsAttribute,
-  updateSvgColor,
   requestEndpoints,
   DEFAULT_TITLE_STATE,
   removeChildrenWithoutClass,
+  updateSvgColor,
+  getFragmentClone,
+  getInputValue,
 } from '../../utils/_utils.mjs';
-import carImage from '../../../../assets/images/car.svg';
+import {
+  createViewContentElements,
+  createViewContentGroups,
+  drawCarField,
+  getCarFieldCopy,
+  renderGetCarsResponse,
+} from '../../UI/garage/_initial-state.mjs';
+import DOMElement from '../../objects/_dom-element.mjs';
 
-const carFragment = new DocumentFragment();
+function incrementCarCount() {
+  const viewCountElement = document.querySelector('.view__count');
+  const currentAmount = Number(viewCountElement.textContent);
+  viewCountElement.textContent = String(currentAmount + 1);
+}
 
-const viewContentChildrenClasses = [
-  'content__controls controls-content',
-  'content__engine engine-content',
-  'content__field field-content',
-];
-const contentControlsClasses = [
-  'controls-content__select',
-  'controls-content__remove',
-];
-const contentEngineClasses = [
-  'engine-content__start',
-  'engine-content__stop',
-  'engine-content__car-name',
-];
-const contentFieldClasses = ['field-content__image'];
+function decrementCarCount() {
+  const viewCountElement = document.querySelector('.view__count');
+  const currentAmount = Number(viewCountElement.textContent);
+  viewCountElement.textContent = String(currentAmount - 1);
+}
 
-const contentControls = [];
-const viewContentChildren = [];
-const contentEngineChildren = [];
-const contentFieldChildren = [];
+async function updateCarProps(carParent, textName, color) {
+  const carNameElement = carParent.querySelector('.engine-content__car-name');
+  const carImgElement = carParent.querySelector('.field-content__image');
 
-const viewContentClassesArrs = [
-  viewContentChildrenClasses,
-  contentControlsClasses,
-  contentEngineClasses,
-  contentFieldClasses,
-];
+  carNameElement.textContent = textName;
+  carImgElement.src = await updateSvgColor(carImgElement.src, color);
+}
 
-const viewContentElemsArrs = [
-  viewContentChildren,
-  contentControls,
-  contentEngineChildren,
-  contentFieldChildren,
-];
+async function getNewCar(name, color, groupID) {
+  const carFieldFragment = new DocumentFragment();
 
-const tagsArr = ['div', 'button', ['button', 'button', 'h3'], 'img'];
+  const viewContentGroup = new DOMElement('div', 'view__content_group').value;
+  const carFieldCopy = getCarFieldCopy();
 
-const viewContent = document.querySelector('.view__content');
-const viewContentGroup = new DOMElement('div', 'view__content_group');
+  await updateCarProps(carFieldCopy, name, color);
+
+  // const carNameElement = carFieldCopy.querySelector(
+  //   '.engine-content__car-name'
+  // );
+  // const carImgElement = carFieldCopy.querySelector('.field-content__image');
+
+  // carNameElement.textContent = name;
+  // carImgElement.src = await updateSvgColor(carImgElement.src, color);
+
+  viewContentGroup.setAttribute('data-id', groupID);
+
+  viewContentGroup.appendChild(carFieldCopy);
+  carFieldFragment.appendChild(viewContentGroup);
+
+  incrementCarCount();
+
+  return getFragmentClone(carFieldFragment);
+}
+
+// async function updateCarByID(name, color, groupID) {
+//   const targetCarGroup = document.querySelector(`[data-id="${groupID}"]`);
+//   await updateCarProps(targetCarGroup, name, color);
+// }
 
 export default class GarageView extends BaseView {
   constructor() {
@@ -60,6 +74,8 @@ export default class GarageView extends BaseView {
   }
 
   async renderInitialState() {
+    const viewContent = document.querySelector('.view__content');
+
     if (window.location.pathname === requestEndpoints.root)
       window.history.replaceState(
         {
@@ -72,19 +88,19 @@ export default class GarageView extends BaseView {
     if (viewContent.innerHTML !== '')
       removeChildrenWithoutClass(viewContent, 'view__content_group');
 
-    const totalCarsCountElement = document.querySelector('.view__page');
+    const totalCarsCountElement = document.querySelector('.view__count');
 
     const totalCars = await this.apiController.getCars();
     const totalCarsLimit = totalCars.limit;
 
-    GarageView.#createViewContentGroups(totalCarsLimit);
+    createViewContentGroups(viewContent, totalCarsLimit);
     const viewContentGroups = document.querySelectorAll('.view__content_group');
 
-    GarageView.#fillViewContentClasses(totalCarsLimit);
+    createViewContentElements(viewContent, totalCarsLimit);
 
-    GarageView.#drawCarField(viewContentGroups, carFragment);
+    drawCarField(viewContentGroups);
 
-    GarageView.#renderGetCarsResponse(
+    renderGetCarsResponse(
       viewContentGroups,
       totalCarsCountElement,
       totalCars.data,
@@ -92,136 +108,32 @@ export default class GarageView extends BaseView {
     );
   }
 
-  static #createViewContentGroups(count) {
-    for (let i = 0; i < count; i++) {
-      const viewContentGroupCopy = viewContentGroup.value.cloneNode(true);
-      viewContent.append(viewContentGroupCopy);
-    }
-  }
-
-  static #fillViewContentClasses(totalCarsLimit) {
-    if (viewContent.childElementCount === totalCarsLimit) {
-      const hasNonEmptyArray = viewContentElemsArrs.some(
-        (arr) => arr.length > 0
-      );
-
-      if (hasNonEmptyArray) return;
-    }
-
-    viewContentClassesArrs.forEach((classElem, index) => {
-      switch (classElem) {
-        case contentFieldClasses:
-          fillElementsArr(
-            classElem,
-            viewContentElemsArrs[index],
-            tagsArr[index],
-            {
-              src: carImage,
-              alt: 'race-car',
-              width: '100',
-              height: '100',
-            }
-          );
-          break;
-        case contentControlsClasses:
-          fillElementsArr(
-            classElem,
-            viewContentElemsArrs[index],
-            tagsArr[index],
-            {},
-            ['Select', 'Remove']
-          );
-          break;
-        default:
-          fillElementsArr(
-            classElem,
-            viewContentElemsArrs[index],
-            tagsArr[index]
-          );
-          break;
-      }
-    });
-  }
-
-  static #drawCarField(viewContentGroups, carFrag) {
-    viewContentGroups.forEach((group) => {
-      const carFieldCopy = GarageView.#getCarFieldCopy(carFrag);
-      group.appendChild(carFieldCopy);
-    });
-  }
-
-  static #renderGetCarsResponse(
-    contentGroupCollection,
-    totalCarsCountElem,
-    responseData,
-    responseLimit
-  ) {
-    GarageView.#displayCarNames(responseData);
-    GarageView.#fillCarImgColors(responseData);
-    GarageView.#setContentGroupID(contentGroupCollection, responseData);
-    GarageView.#displayTotalCarsCount(totalCarsCountElem, responseLimit);
-  }
-
-  static #displayCarNames(
-    carNames,
-    carNameElements = document.querySelectorAll('.engine-content__car-name')
-  ) {
-    updateElementsProperty(carNameElements, carNames, 'textContent', 'name');
-  }
-
-  static #fillCarImgColors(
-    carColors,
-    carImgElements = document.querySelectorAll('.field-content__image')
-  ) {
-    carImgElements.forEach(async (carImg, index) => {
-      const carImgCopy = carImg;
-      carImgCopy.src = await updateSvgColor(carImg.src, carColors[index].color);
-    });
-  }
-
-  static #setContentGroupID(viewContentGroups, groupID) {
-    updateElementsAttribute(viewContentGroups, groupID, 'data-id', 'id');
-  }
-
-  static #displayTotalCarsCount(totalCarsCountElem, count) {
-    const countElement = new DOMElement(
-      totalCarsCountElem.tagName,
-      totalCarsCountElem.className,
-      {},
-      String(count)
+  async drawNewCar() {
+    const newNameValue = getInputValue(document.querySelector('.name-create'));
+    const newColorValue = getInputValue(
+      document.querySelector('.color-create')
     );
 
-    totalCarsCountElem.parentNode.replaceChild(
-      countElement.value,
-      totalCarsCountElem
+    const newCarData = await this.apiController.createCar(
+      newNameValue,
+      newColorValue
     );
+
+    const viewContent = document.querySelector('.view__content');
+    const newCar = await getNewCar(
+      newCarData.name,
+      newCarData.color,
+      newCarData.id
+    );
+    viewContent.appendChild(newCar);
   }
 
-  static #getCarFieldCopy(carFrag) {
-    const carFieldCopy = carFrag.cloneNode(true);
+  async removeCarFromPage(carID) {
+    await this.apiController.deleteCar(carID);
+    decrementCarCount();
+  }
 
-    viewContentChildren.forEach((child) => {
-      carFieldCopy.append(child.cloneNode(true));
-    });
-
-    contentEngineChildren.forEach((child) => {
-      carFieldCopy
-        .querySelectorAll('.content__engine')
-        .forEach((engine) => engine.append(child.cloneNode(true)));
-    });
-
-    contentControls.forEach((child) => {
-      carFieldCopy
-        .querySelectorAll('.content__controls')
-        .forEach((controller) => controller.append(child.cloneNode(true)));
-    });
-
-    contentFieldChildren.forEach((child) => {
-      carFieldCopy
-        .querySelectorAll('.content__field')
-        .forEach((field) => field.append(child.cloneNode(true)));
-    });
-
-    return carFieldCopy;
+  async renderCarUpdate(groupID, name, color) {
+    await this.apiController.updateCar(groupID, name, color);
   }
 }

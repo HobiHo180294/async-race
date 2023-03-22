@@ -230,10 +230,6 @@ function highlightActivePageButton(activeButton) {
     (
       activeButton.nextElementSibling || activeButton.previousElementSibling
     ).classList.remove('_active-page');
-
-  // console.log('target:', activeButton);
-  // console.log('next:', activeButton.nextElementSibling);
-  // console.log('prev:', activeButton.previousElementSibling);
 }
 
 function removeElementsByValues(arr, ...vals) {
@@ -262,6 +258,15 @@ function containsFragment(element, documentFragment) {
   return contains;
 }
 
+function compareClassLists(fragmentNode, elementNode) {
+  const fragmentClasses = Array.from(fragmentNode.classList);
+  const elementClasses = Array.from(elementNode.classList);
+
+  return fragmentClasses.every((className) =>
+    elementClasses.includes(className)
+  );
+}
+
 function removeFragment(element, documentFragment) {
   for (let i = 0; i < documentFragment.childNodes.length; i++) {
     const fragmentNode = documentFragment.childNodes[i];
@@ -270,16 +275,39 @@ function removeFragment(element, documentFragment) {
       if (
         fragmentNode.classList.toString() === elementNode.classList.toString()
       )
-        elementNode.remove();
+        elementNode.classList.add('_fragment-hide');
     }
   }
 }
 
-// function removeFragment(element, documentFragment) {
-//   element.childNodes.forEach((node) => {
-//     if (documentFragment.contains(node)) element.removeChild(node);
-//   });
-// }
+function showFragment(element, documentFragment) {
+  for (let i = 0; i < documentFragment.childNodes.length; i++) {
+    const fragmentNode = documentFragment.childNodes[i];
+    for (let j = 0; j < element.childNodes.length; j++) {
+      const elementNode = element.childNodes[j];
+      if (compareClassLists(fragmentNode, elementNode))
+        elementNode.classList.remove('_fragment-hide');
+    }
+  }
+}
+
+function addActionClassNames(elements, baseClassName, actionPrefix) {
+  elements.forEach((element, index) => {
+    if (
+      element.classList.length === 1 &&
+      element.classList.contains(baseClassName)
+    ) {
+      const actionClassName = `${actionPrefix}-${
+        index > 0 ? 'update' : 'create'
+      }`;
+      element.classList.add(actionClassName);
+    }
+  });
+}
+
+function getInputValue(inputElement) {
+  return inputElement.value;
+}
 
 export {
   fillElementsArr,
@@ -291,7 +319,6 @@ export {
   requestEndpoints,
   requestHeaders,
   getElementByClassName,
-  // appendChildren,
   getFragmentClone,
   getCurrentMarkupFragment,
   appendMarkup,
@@ -309,4 +336,7 @@ export {
   changeElementStyleProperty,
   containsFragment,
   removeFragment,
+  showFragment,
+  addActionClassNames,
+  getInputValue,
 };
