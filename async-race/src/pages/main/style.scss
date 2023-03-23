@@ -164,9 +164,6 @@ body {
     &_group {
       margin-bottom: 30px;
     }
-
-    &_table {
-    }
   }
 
   &__pagination {
@@ -208,6 +205,10 @@ body {
     &:hover::before {
       border-left-color: $cornflower-blue;
     }
+
+    &:disabled {
+      @extend %disabled;
+    }
   }
 
   &__stop {
@@ -216,10 +217,15 @@ body {
       width: 15px;
       height: 15px;
       background-color: $seafoam-green;
+      transition: all 0.3s ease;
     }
 
     &:hover::before {
       background-color: $cornflower-blue;
+    }
+
+    &:disabled {
+      @extend %disabled;
     }
   }
 
@@ -247,22 +253,26 @@ body {
     transform: skewX(303deg);
   }
 
+  &::after {
+    content: '';
+    position: absolute;
+    top: 56px;
+    right: 18%;
+    height: 33px;
+    transform: skewX(303deg);
+    z-index: 1;
+    width: 20px;
+    background: repeating-conic-gradient(
+        from 0deg,
+        #000000 0% 25%,
+        #ffffff 0% 50%
+      )
+      50%/10px 10px;
+  }
+
   &__image {
     position: relative;
-    z-index: 2;
-  }
-}
-
-.content-table {
-  &__head {
-  }
-
-  &__body {
-  }
-}
-
-.table-head {
-  &__row {
+    z-index: 5;
   }
 }
 
@@ -273,6 +283,23 @@ body {
     font-size: 18px;
     padding: 5px 60px 10px 5px;
     border-bottom: 1px solid $pure-white;
+  }
+}
+
+.body-row {
+  > * {
+    color: $pure-white;
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+    padding: 5px 60px 10px 5px;
+    border-bottom: 1px solid $pure-white;
+  }
+
+  &__car {
+    &_img {
+      width: 60px;
+      height: 60px;
+    }
   }
 }
 

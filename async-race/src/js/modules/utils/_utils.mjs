@@ -9,6 +9,7 @@ const requestEndpoints = {
   root: '/',
   garage: '/garage',
   winners: '/winners',
+  engine: '/engine',
 };
 
 const requestHeaders = {
@@ -309,6 +310,11 @@ function getInputValue(inputElement) {
   return inputElement.value;
 }
 
+function convertToSeconds(timeInMs) {
+  const timeInSeconds = (timeInMs / 1000).toFixed(2);
+  return timeInSeconds;
+}
+
 export {
   fillElementsArr,
   updateSvgColor,
@@ -339,4 +345,5 @@ export {
   showFragment,
   addActionClassNames,
   getInputValue,
+  convertToSeconds,
 };
